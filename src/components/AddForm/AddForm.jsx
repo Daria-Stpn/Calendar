@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
 import style from "./AddForm.module.scss";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { ContextStore } from "../../store/ContextStore";
+
 
 function AddForm(props) {
     const [title, setTitle] = useState("");
@@ -29,8 +29,22 @@ function AddForm(props) {
         }
     }, [title, date, time]);
 
+    let { addEvent } = useContext(ContextStore);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (correct) {
+            addEvent({ title, date, time, color });
+            props.open(false);
+        }
+    };
+
     return (
-        <div className={style.wrapper} onClick={(e) => e.target === e.currentTarget && props.open(false)}>F
+        <div
+            className={style.wrapper}
+            onClick={(e) => e.target === e.currentTarget && props.open(false)}
+        >
+            F
             <div className={style.inner}>
                 <h1 className={style.title}>Add new event</h1>
                 <div className={style.item}>
@@ -90,7 +104,7 @@ function AddForm(props) {
                         onChange={(e) => setColor(e.target.value)}
                     />
                 </div>
-                <button className={style.button} disabled={!correct}>
+                <button className={style.button} disabled={!correct} onClick={handleSubmit}> 
                     Add
                 </button>
                 <button
