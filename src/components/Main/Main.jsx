@@ -6,6 +6,9 @@ import MCalendar from "../MCalendar/MCalendar";
 import { Routes, Route } from "react-router";
 import WCalendar from "../WCalendar/WCalendar";
 import DCalendar from "../DCalendar/DCalendar";
+import Modal from "../Modal/Modal";
+import RegisterPage from "../Auth/RegisterPage";
+import LoginPage from "../Auth/LoginPage";
 
 
 function Main(props) {
@@ -13,11 +16,13 @@ function Main(props) {
     return (
         <main className={style.wrapper}>
             <Routes>
+                <Route path = "/register" element={<RegisterPage/>}/>
+                <Route path = "/login" element={<LoginPage/>}/>
                 <Route path="/" element={<MCalendar />} />
                 <Route path="/week" element={<WCalendar/>} />
                 <Route path="/day" element={<DCalendar/>} />
             </Routes>
-            {modalOpen && <AddForm open={setModalOpen} />}
+            {modalOpen && <Modal open={setModalOpen} />}
             <button
                 className={style.addButton}
                 onClick={() => setModalOpen(true)}
