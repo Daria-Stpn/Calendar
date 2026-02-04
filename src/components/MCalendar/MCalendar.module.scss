@@ -27,6 +27,7 @@ table {
 
         & .event {
             width: 100%;
+            max-width: 100px;
             margin-top: 5px;
             overflow: hidden;
             text-overflow: ellipsis;

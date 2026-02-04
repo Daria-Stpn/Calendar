@@ -5,6 +5,7 @@ import { FaRegCalendarPlus } from "react-icons/fa";
 import MCalendar from "../MCalendar/MCalendar";
 import { Routes, Route } from "react-router";
 import WCalendar from "../WCalendar/WCalendar";
+import DCalendar from "../DCalendar/DCalendar";
 
 
 function Main(props) {
@@ -14,7 +15,7 @@ function Main(props) {
             <Routes>
                 <Route path="/" element={<MCalendar />} />
                 <Route path="/week" element={<WCalendar/>} />
-                <Route path="/day" element={<div>day</div>} />
+                <Route path="/day" element={<DCalendar/>} />
             </Routes>
             {modalOpen && <AddForm open={setModalOpen} />}
             <button

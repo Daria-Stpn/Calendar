@@ -3,15 +3,31 @@ import PropTypes from "prop-types";
 import style from "./WCalendar.module.scss";
 import { ContextStore } from "../../store/ContextStore";
 
-
 function WCalendar(props) {
     const [currentDate, setCurrentDate] = useState(new Date());
+    const getCalendarDates = (year, month) => {
+        const startOfWeek = new Date(
+            year,
+            month,
+            currentDate.getDate() - currentDate.getDay() + 2,
+        );
 
+        const dates = [];
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(year, month, startOfWeek.getDate() + i);
+            dates.push(date);
+        }
+        return dates;
+    };
     let { events } = useContext(ContextStore);
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const dates = getCalendarDates(year, month);
+    const getMinutes = (time) => {
+        const [hours, minutes] = time.split(":").map(Number);
+        return hours * 60 + minutes;
+    };
 
     return (
         <div className={style.wrapper}>
@@ -29,39 +45,38 @@ function WCalendar(props) {
                         </tr>
                     </thead>
                     <tbody>
-                                <tr key={weekIndex}>
-                                    {dates
-                                        .slice(weekIndex * 7, weekIndex * 7 + 7)
-                                        .map((date, index) => (
-                                            <td key={index}>
-                                                <span className={style.number}>
-                                                    {date.getUTCDate()}
-                                                </span>
-                                                {events
-                                                    .filter(
-                                                        (event) =>
-                                                            event.date ==
-                                                            date
-                                                                .toISOString()
-                                                                .split("T")[0]
-                                                    )
-                                                    .map((event, i) => (
-                                                        <button
-                                                            key={i}
-                                                            className={
-                                                                style.event
-                                                            }
-                                                            style={{
-                                                                borderLeftColor:
-                                                                    event.color,
-                                                            }}
-                                                        >
-                                                            {event.title}
-                                                        </button>
-                                                    ))}
-                                            </td>
+                        <tr>
+                            {dates.map((date, index) => (
+                                <td key={index}>
+                                    <span className={style.number}>
+                                        {date.getUTCDate()}
+                                    </span>
+                                    {events
+                                        .filter(
+                                            (event) =>
+                                                event.date ==
+                                                date
+                                                    .toISOString()
+                                                    .split("T")[0],
+                                        )
+                                        .sort(
+                                            (a, b) => getMinutes(a.time) - getMinutes(b.time)
+                                        )
+                                        .map((event, i) => (
+                                            <button
+                                                key={i}
+                                                className={style.event}
+                                                style={{
+                                                    borderLeftColor:
+                                                        event.color,
+                                                }}
+                                            >
+                                                {event.time} - {event.title}
+                                            </button>
                                         ))}
-                                </tr>
+                                </td>
+                            ))}
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -72,15 +87,3 @@ function WCalendar(props) {
 WCalendar.propTypes = {};
 
 export default WCalendar;
-
-const getCalendarDates = (year, month) => {
-    
-    const startOfWeek = new Date(year, month, currentDate.getDate() - currentDate.getDay() + 2);
-
-    const dates = [];
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(year, month, startOfWeek.getDate() + i);
-        dates.push(date);
-    }
-    return dates;
-};
