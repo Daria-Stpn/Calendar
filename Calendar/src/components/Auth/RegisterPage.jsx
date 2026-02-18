@@ -1,6 +1,7 @@
 import React from "react";
 import style from "./Auth.module.scss";
 import { useForm } from "react-hook-form";
+import { useFetch } from "../../hooks/useFetch";
 
 export default function RegisterPage(props) {
     const {
@@ -9,10 +10,23 @@ export default function RegisterPage(props) {
         formState: { errors },
         watch,
     } = useForm();
+    const {data, error, loading, refetch} = useFetch(
+        "http://localhost:3000/register",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        },
+        false
+    );
+    const onSubmit = (formData) => {
+        refetch(JSON.stringify(formData));
+    }
     return (
         <div className={style.wrapper}>
             <h1>Register</h1>
-            <form onSubmit={handleSubmit((data)=>console.log(data))}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <label htmlFor="login">Login</label>
                 <input
                     type="text"
